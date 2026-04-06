@@ -1,35 +1,61 @@
 package org.sonar.plugins.clojure.sensors.eastwood;
 
-import org.sonar.plugins.clojure.sensors.CommandStreamConsumer;
-import org.sonar.plugins.clojure.sensors.Issue;
-
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-public class EastwoodIssueParser {
-    private static final Pattern EASTWOOD_PATTERN = Pattern.compile("([^:]+):(\\d+):(\\d+):([\\s\\w-]+):(.*)");
-    public static final String EASTWOOD_KEY = "eastwood";
+public final class EastwoodIssueParser {
 
-    private EastwoodIssueParser() {}
+    private static final Pattern EASTWOOD_PATTERN =
+        Pattern.compile("^(.+?):(\\d+):(\\d+):\\s*([\\w-]+):\\s*(.+)$");
 
-    public static List<Issue> parse(CommandStreamConsumer output) {
-        if (output != null) {
-            return output.getData().stream().map(line -> {
-                Matcher matcher = EASTWOOD_PATTERN.matcher(line);
-                if (matcher.find()) {
-                    String description = matcher.group(5);
-                    String filePath = matcher.group(1);
-                    int lineNumber = Integer.parseInt(matcher.group(2));
-                    return new Issue(EASTWOOD_KEY, description, filePath, lineNumber);
-                }
-                return null;
-            }).filter(Objects::nonNull).collect(Collectors.toList());
+    private EastwoodIssueParser() {
+    }
+
+    public static List<EastwoodFinding> parse(String output) {
+        if (output == null || output.isBlank()) {
+            return Collections.emptyList();
         }
-        return Collections.emptyList();
+
+        List<EastwoodFinding> findings = new ArrayList<>();
+        String[] lines = output.split("\\r?\\n");
+        for (String line : lines) {
+            Matcher matcher = EASTWOOD_PATTERN.matcher(line.trim());
+            if (!matcher.matches()) {
+                continue;
+            }
+
+            String filename = normalizeFilename(matcher.group(1));
+            int row = parseInt(matcher.group(2));
+            int col = parseInt(matcher.group(3));
+            String ruleId = matcher.group(4);
+            String message = matcher.group(5);
+            findings.add(new EastwoodFinding(filename, row, col, ruleId, message));
+        }
+
+        return findings;
+    }
+
+    private static int parseInt(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException ex) {
+            return -1;
+        }
+    }
+
+    private static String normalizeFilename(String filename) {
+        if (filename == null) {
+            return null;
+        }
+        if (filename.startsWith("./")) {
+            return filename.substring(2);
+        }
+        if (filename.startsWith(".\\")) {
+            return filename.substring(2);
+        }
+        return filename;
     }
 }

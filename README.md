@@ -10,10 +10,10 @@
 ## Current State
 
 ### Features:
-* Static code analysis powered by [eastwood](https://github.com/jonase/eastwood), [kibit](https://github.com/jonase/kibit) and [clj-kondo](https://github.com/clj-kondo/clj-kondo).
-* Detection of outdated dependencies/plugins powered by [lein-ancient](https://github.com/xsc/lein-ancient).
-* Coverage reports powered by [cloverage](https://github.com/cloverage/cloverage).
-* Detection of vulnerable dependencies powered by [lein-nvd](https://github.com/rm-hull/lein-nvd).
+* Static code analysis powered by [clj-kondo](https://github.com/clj-kondo/clj-kondo), [Kibit](https://github.com/jonase/kibit), and [Eastwood](https://github.com/jonase/eastwood).
+* Coverage import powered by [Cloverage](https://github.com/cloverage/cloverage).
+* Outdated dependency detection powered by [lein-ancient](https://github.com/xsc/lein-ancient).
+* Vulnerability scanning powered by [nvd-clojure](https://github.com/rm-hull/nvd-clojure) (lein-nvd).
 
 ## Installation
 In order to install SonarClojure:
@@ -22,23 +22,8 @@ In order to install SonarClojure:
 3. Restart the SonarQube server.
 
 ## Usage
-1. Change your ***project.clj*** file and add the required plugins and/or dependencies:
-
-    ```clojure
-    :plugins [[jonase/eastwood "0.3.13"]
-              [lein-kibit "0.1.8"]
-              [lein-ancient "0.6.15"]
-              [lein-cloverage "1.1.2"]
-              [lein-nvd "1.4.0"]]
-    :dependencies [[clj-kondo "RELEASE"]]
-     ```
-
-> Note 1: Please make sure the plugins above are setup correctly for your project. A good way to test this is to
-execute each one of them individually on your project. Once they are running fine, SonarClojure should be able to
-parse their reports.
->
-> Note 2: The lein plugin versions above are the ones we currently support. If you would like to test with a different
-version, keep in mind that it might cause errors on SonarClojure analysis. 
+1. Ensure `clj-kondo` is installed and available on your `PATH`, or configure its path via
+`sonar.clojure.kondo.path` (see below).
 
 2. Create a ***sonar-project.properties*** file in the root folder of your app:
 
@@ -51,26 +36,86 @@ version, keep in mind that it might cause errors on SonarClojure analysis.
 
 3. Run [sonar-scanner](https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner) on your project.
 
-### Configuring Sensors
+### Configuring clj-kondo
 
-#### Disabling
-Sensors can be disabled by setting `sonar.clojure.<sensorname>.enabled=false` in the sonar-project.properties or
-by using the command line argument `-Dsonar.clojure.<sensorname>.enabled` when running sonar-scanner.
-Sensor names are `eastwood`, `kibit`, `kondo`, `ancient`, `nvd` and `cloverage`.
+The sensor runs clj-kondo during analysis. You can configure:
 
-#### Report file location
-Some sensors use report files to parse the results. Both cloverage and lein-nvd use this report files.
-By default they have a path already set but you can change the file locations by setting the property in the
-sonar-project.properties:
+* `sonar.clojure.kondo.enabled` (default: `true`)
+* `sonar.clojure.kondo.path` (default: `clj-kondo`)
+* `sonar.clojure.kondo.lintPaths` (default: `.`)
+* `sonar.clojure.kondo.config` (default: `{:output {:format :json}}`)
+* `sonar.clojure.kondo.configPath` (default: empty)
+* `sonar.clojure.kondo.arguments` (default: empty)
+* `sonar.clojure.kondo.timeout` (default: `300`, seconds)
 
-`sonar.clojure.cloverage.reportPath=target/coverage/codecov.json`
+By default the sensor forces JSON output via the `:output {:format :json}` config so findings can be
+mapped to clj-kondo rule types. If you provide `sonar.clojure.kondo.configPath`, that file is used
+instead of the inline EDN config.
 
-`sonar.clojure.nvd.reportPath=target/nvd/dependency-check-report.json`
+### Configuring Kibit
 
-#### Setting a timeout
-By default, sensors have a timeout value of 300 seconds. This value applies per sensor while they are executing.
-You can change the default value by setting the property `sonar.clojure.sensors.timeout` in the sonar-project.properties
-file.
+The sensor runs Kibit during analysis. You can configure:
+
+* `sonar.clojure.kibit.enabled` (default: `true`)
+* `sonar.clojure.kibit.command` (default: `lein kibit`)
+* `sonar.clojure.kibit.paths` (default: empty)
+* `sonar.clojure.kibit.arguments` (default: empty)
+* `sonar.clojure.kibit.timeout` (default: `300`, seconds)
+
+If you use the default `lein kibit` command, make sure the `lein-kibit` plugin is configured
+in your `project.clj`.
+
+### Configuring Eastwood
+
+The sensor runs Eastwood during analysis. You can configure:
+
+* `sonar.clojure.eastwood.enabled` (default: `true`)
+* `sonar.clojure.eastwood.command` (default: `lein eastwood`)
+* `sonar.clojure.eastwood.options` (default: empty)
+* `sonar.clojure.eastwood.arguments` (default: empty)
+* `sonar.clojure.eastwood.timeout` (default: `300`, seconds)
+
+If you use the default `lein eastwood` command, make sure the `eastwood` plugin is configured
+in your `project.clj`.
+
+### Configuring Cloverage
+
+The sensor imports coverage from Cloverage's `codecov.json`. You can configure:
+
+* `sonar.clojure.cloverage.enabled` (default: `true`)
+* `sonar.clojure.cloverage.run` (default: `false`)
+* `sonar.clojure.cloverage.command` (default: `lein cloverage --codecov`)
+* `sonar.clojure.cloverage.arguments` (default: empty)
+* `sonar.clojure.cloverage.reportPath` (default: `target/coverage/codecov.json`)
+* `sonar.clojure.cloverage.timeout` (default: `300`, seconds)
+
+If you set `sonar.clojure.cloverage.run=true`, make sure the `lein-cloverage` plugin is configured
+in your `project.clj`.
+
+### Configuring Lein Ancient
+
+The sensor runs `lein ancient` and reports outdated dependencies. You can configure:
+
+* `sonar.clojure.ancient.enabled` (default: `true`)
+* `sonar.clojure.ancient.command` (default: `lein ancient`)
+* `sonar.clojure.ancient.arguments` (default: empty)
+* `sonar.clojure.ancient.timeout` (default: `300`, seconds)
+
+Make sure the `lein-ancient` plugin is configured in your `project.clj`.
+
+### Configuring NVD (lein-nvd)
+
+The sensor imports vulnerabilities from the JSON report produced by `lein nvd`. You can configure:
+
+* `sonar.clojure.nvd.enabled` (default: `true`)
+* `sonar.clojure.nvd.run` (default: `false`)
+* `sonar.clojure.nvd.command` (default: `lein nvd check`)
+* `sonar.clojure.nvd.arguments` (default: empty)
+* `sonar.clojure.nvd.reportPath` (default: `target/nvd/dependency-check-report.json`)
+* `sonar.clojure.nvd.timeout` (default: `300`, seconds)
+
+If you set `sonar.clojure.nvd.run=true`, make sure the `lein-nvd` plugin is configured in your
+`project.clj` and that it is producing a JSON report at the configured `reportPath`.
 
 #### Debugging
 * SonarClojure is in its early days and therefore you might face problems when trying to run the plugin, especially because
@@ -92,7 +137,8 @@ then SonarClojure should be able to parse the results. The same idea applies to 
 Maven will generate a SNAPSHOT under the folder ***target***.
 
 ## Compatibility
-At the moment, SonarClojure supports up to version 8.6.1 of SonarQube.
+SonarClojure targets SonarQube Community Build 26.1 (and newer in the 26.x line).
+Builds require Java 21.
 
 ## License
 

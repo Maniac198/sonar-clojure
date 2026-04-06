@@ -1,44 +1,78 @@
 package org.sonar.plugins.clojure.settings;
 
+import java.util.List;
+import org.sonar.api.PropertyType;
 import org.sonar.api.config.PropertyDefinition;
 
-import java.util.List;
+public final class NvdProperties {
 
-import static java.lang.String.valueOf;
-import static java.util.Arrays.asList;
-import static org.sonar.plugins.clojure.settings.Properties.MAIN_CATEGORY;
-import static org.sonar.plugins.clojure.settings.Properties.SUB_CATEGORY;
+    public static final String ENABLED_KEY = "sonar.clojure.nvd.enabled";
+    public static final String RUN_KEY = "sonar.clojure.nvd.run";
+    public static final String COMMAND_KEY = "sonar.clojure.nvd.command";
+    public static final String ARGUMENTS_KEY = "sonar.clojure.nvd.arguments";
+    public static final String REPORT_PATH_KEY = "sonar.clojure.nvd.reportPath";
+    public static final String TIMEOUT_KEY = "sonar.clojure.nvd.timeout";
 
-public class NvdProperties {
-    public static final String ENABLED_PROPERTY = "sonar.clojure.nvd.enabled";
-    public static final boolean ENABLED_PROPERTY_DEFAULT = true;
-    public static final String REPORT_LOCATION_PROPERTY = "sonar.clojure.nvd.reportPath";
-    public static final String REPORT_LOCATION_DEFAULT = "target/nvd/dependency-check-report.json";
+    public static final boolean ENABLED_DEFAULT = true;
+    public static final boolean RUN_DEFAULT = false;
+    public static final String COMMAND_DEFAULT = "lein nvd check";
+    public static final String ARGUMENTS_DEFAULT = "";
+    public static final String REPORT_PATH_DEFAULT = "target/nvd/dependency-check-report.json";
+    public static final String TIMEOUT_DEFAULT = "300";
 
     private NvdProperties() {
     }
 
-    static PropertyDefinition getEnabledProperty() {
-        return PropertyDefinition.builder(ENABLED_PROPERTY)
-                .category(MAIN_CATEGORY)
-                .subCategory(SUB_CATEGORY)
-                .defaultValue(valueOf(ENABLED_PROPERTY_DEFAULT))
-                .name("Lein NVD Disabled")
-                .description("Indicates if lein-nvd sensor should be disabled")
-                .build();
-    }
-
-    static PropertyDefinition getReportLocationProperty() {
-        return PropertyDefinition.builder(REPORT_LOCATION_PROPERTY)
-                .category(MAIN_CATEGORY)
-                .subCategory(SUB_CATEGORY)
-                .defaultValue(REPORT_LOCATION_DEFAULT)
-                .name("Lein NVD Report Location")
-                .description("Indicates the location of the Lein NVD report file")
-                .build();
-    }
-
-    static List<PropertyDefinition> getProperties() {
-        return asList(getEnabledProperty(), getReportLocationProperty());
+    public static List<PropertyDefinition> getProperties() {
+        return List.of(
+            PropertyDefinition.builder(ENABLED_KEY)
+                .name("Enable NVD (lein-nvd)")
+                .description("Import NVD report during analysis.")
+                .category("Clojure")
+                .subCategory("NVD")
+                .defaultValue(Boolean.toString(ENABLED_DEFAULT))
+                .type(PropertyType.BOOLEAN)
+                .build(),
+            PropertyDefinition.builder(RUN_KEY)
+                .name("Run NVD (lein-nvd)")
+                .description("Run lein-nvd during analysis before importing the report.")
+                .category("Clojure")
+                .subCategory("NVD")
+                .defaultValue(Boolean.toString(RUN_DEFAULT))
+                .type(PropertyType.BOOLEAN)
+                .build(),
+            PropertyDefinition.builder(COMMAND_KEY)
+                .name("NVD command")
+                .description("Base command used to run lein-nvd (e.g. 'lein nvd check').")
+                .category("Clojure")
+                .subCategory("NVD")
+                .defaultValue(COMMAND_DEFAULT)
+                .type(PropertyType.STRING)
+                .build(),
+            PropertyDefinition.builder(ARGUMENTS_KEY)
+                .name("NVD extra arguments")
+                .description("Additional arguments appended to the lein-nvd command.")
+                .category("Clojure")
+                .subCategory("NVD")
+                .defaultValue(ARGUMENTS_DEFAULT)
+                .type(PropertyType.STRING)
+                .build(),
+            PropertyDefinition.builder(REPORT_PATH_KEY)
+                .name("NVD report path")
+                .description("Path to the dependency-check JSON report produced by lein-nvd.")
+                .category("Clojure")
+                .subCategory("NVD")
+                .defaultValue(REPORT_PATH_DEFAULT)
+                .type(PropertyType.STRING)
+                .build(),
+            PropertyDefinition.builder(TIMEOUT_KEY)
+                .name("NVD timeout")
+                .description("Timeout for lein-nvd execution in seconds.")
+                .category("Clojure")
+                .subCategory("NVD")
+                .defaultValue(TIMEOUT_DEFAULT)
+                .type(PropertyType.INTEGER)
+                .build()
+        );
     }
 }

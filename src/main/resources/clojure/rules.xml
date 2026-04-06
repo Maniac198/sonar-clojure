@@ -1,109 +1,315 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rules>
     <rule>
-        <key>eastwood</key>
-        <name>Suggestion from Eastwood</name>
-        <internalKey>eastwood</internalKey>
-        <description>The suggestion is generated using Eastwood, a clojure lint tool that uses the tools.analyzer and
-            tools.analyzer.jvm libraries to inspect namespaces and report possible problems.
+        <key>clj-kondo</key>
+        <name>Issue reported by clj-kondo</name>
+        <internalKey>clj-kondo</internalKey>
+        <description>
+            Issue reported by clj-kondo. The issue message contains the original clj-kondo finding.
         </description>
         <severity>MINOR</severity>
         <cardinality>SINGLE</cardinality>
         <status>READY</status>
         <type>CODE_SMELL</type>
-        <remediationFunction>CONSTANT_ISSUE</remediationFunction>
-        <remediationFunctionBaseEffort>2min</remediationFunctionBaseEffort>
     </rule>
     <rule>
-        <key>kondo</key>
-        <name>Suggestion from clj-kondo</name>
-        <internalKey>kondo</internalKey>
-        <description>The suggestion is generated using clj-kondo, a clojure lint tool.
+        <key>clj-kondo-unused-binding</key>
+        <name>Remove unused bindings</name>
+        <internalKey>clj-kondo-unused-binding</internalKey>
+        <description>
+            Unused local bindings increase noise and reduce maintainability.
         </description>
         <severity>MINOR</severity>
         <cardinality>SINGLE</cardinality>
         <status>READY</status>
         <type>CODE_SMELL</type>
-        <remediationFunction>CONSTANT_ISSUE</remediationFunction>
-        <remediationFunctionBaseEffort>2min</remediationFunctionBaseEffort>
+    </rule>
+    <rule>
+        <key>clj-kondo-unused-import</key>
+        <name>Remove unused imports</name>
+        <internalKey>clj-kondo-unused-import</internalKey>
+        <description>
+            Unused imports make namespaces harder to understand.
+        </description>
+        <severity>MINOR</severity>
+        <cardinality>SINGLE</cardinality>
+        <status>READY</status>
+        <type>CODE_SMELL</type>
+    </rule>
+    <rule>
+        <key>clj-kondo-unused-namespace</key>
+        <name>Remove unused required namespaces</name>
+        <internalKey>clj-kondo-unused-namespace</internalKey>
+        <description>
+            Required namespaces that are never used should be removed.
+        </description>
+        <severity>MINOR</severity>
+        <cardinality>SINGLE</cardinality>
+        <status>READY</status>
+        <type>CODE_SMELL</type>
+    </rule>
+    <rule>
+        <key>clj-kondo-unused-referred-var</key>
+        <name>Remove unused referred vars</name>
+        <internalKey>clj-kondo-unused-referred-var</internalKey>
+        <description>
+            Referred vars should be used or removed from namespace declarations.
+        </description>
+        <severity>MINOR</severity>
+        <cardinality>SINGLE</cardinality>
+        <status>READY</status>
+        <type>CODE_SMELL</type>
+    </rule>
+    <rule>
+        <key>clj-kondo-unused-private-var</key>
+        <name>Remove unused private vars</name>
+        <internalKey>clj-kondo-unused-private-var</internalKey>
+        <description>
+            Private vars that are never used indicate dead code.
+        </description>
+        <severity>MINOR</severity>
+        <cardinality>SINGLE</cardinality>
+        <status>READY</status>
+        <type>CODE_SMELL</type>
+    </rule>
+    <rule>
+        <key>clj-kondo-unresolved-symbol</key>
+        <name>Resolve unresolved symbols</name>
+        <internalKey>clj-kondo-unresolved-symbol</internalKey>
+        <description>
+            Unresolved symbols usually lead to runtime failures.
+        </description>
+        <severity>MAJOR</severity>
+        <cardinality>SINGLE</cardinality>
+        <status>READY</status>
+        <type>BUG</type>
+    </rule>
+    <rule>
+        <key>clj-kondo-unresolved-namespace</key>
+        <name>Resolve unresolved namespaces</name>
+        <internalKey>clj-kondo-unresolved-namespace</internalKey>
+        <description>
+            Namespace resolution errors must be fixed to ensure code correctness.
+        </description>
+        <severity>MAJOR</severity>
+        <cardinality>SINGLE</cardinality>
+        <status>READY</status>
+        <type>BUG</type>
+    </rule>
+    <rule>
+        <key>clj-kondo-invalid-arity</key>
+        <name>Fix invalid function arity usage</name>
+        <internalKey>clj-kondo-invalid-arity</internalKey>
+        <description>
+            Calling a function with an invalid arity is a correctness issue.
+        </description>
+        <severity>MAJOR</severity>
+        <cardinality>SINGLE</cardinality>
+        <status>READY</status>
+        <type>BUG</type>
+    </rule>
+    <rule>
+        <key>clj-kondo-redefined-var</key>
+        <name>Avoid accidental var redefinitions</name>
+        <internalKey>clj-kondo-redefined-var</internalKey>
+        <description>
+            Var redefinitions can hide defects and produce inconsistent behavior.
+        </description>
+        <severity>MAJOR</severity>
+        <cardinality>SINGLE</cardinality>
+        <status>READY</status>
+        <type>BUG</type>
+    </rule>
+    <rule>
+        <key>clj-kondo-shadowed-var</key>
+        <name>Avoid shadowed vars</name>
+        <internalKey>clj-kondo-shadowed-var</internalKey>
+        <description>
+            Shadowing vars can introduce confusion and subtle bugs.
+        </description>
+        <severity>MINOR</severity>
+        <cardinality>SINGLE</cardinality>
+        <status>READY</status>
+        <type>CODE_SMELL</type>
+    </rule>
+    <rule>
+        <key>clj-kondo-missing-docstring</key>
+        <name>Document public vars and functions</name>
+        <internalKey>clj-kondo-missing-docstring</internalKey>
+        <description>
+            Public APIs should have docstrings for maintainability.
+        </description>
+        <severity>MINOR</severity>
+        <cardinality>SINGLE</cardinality>
+        <status>READY</status>
+        <type>CODE_SMELL</type>
+    </rule>
+    <rule>
+        <key>clj-kondo-duplicate-require</key>
+        <name>Avoid duplicate require entries</name>
+        <internalKey>clj-kondo-duplicate-require</internalKey>
+        <description>
+            Duplicate requires in namespaces should be consolidated.
+        </description>
+        <severity>MINOR</severity>
+        <cardinality>SINGLE</cardinality>
+        <status>READY</status>
+        <type>CODE_SMELL</type>
+    </rule>
+    <rule>
+        <key>clj-kondo-redundant-do</key>
+        <name>Remove redundant do blocks</name>
+        <internalKey>clj-kondo-redundant-do</internalKey>
+        <description>
+            Redundant do blocks add noise and reduce readability.
+        </description>
+        <severity>MINOR</severity>
+        <cardinality>SINGLE</cardinality>
+        <status>READY</status>
+        <type>CODE_SMELL</type>
     </rule>
     <rule>
         <key>kibit</key>
-        <name>Suggestion from Kibit</name>
+        <name>Issue reported by Kibit</name>
         <internalKey>kibit</internalKey>
-        <description>The suggestion is generated using core.logic to search for patterns of code that could be rewritten
-            with a more idiomatic function or macro.
+        <description>
+            Issue reported by Kibit. The issue message contains the original Kibit suggestion.
         </description>
         <severity>MINOR</severity>
         <cardinality>SINGLE</cardinality>
         <status>READY</status>
         <type>CODE_SMELL</type>
-        <remediationFunction>CONSTANT_ISSUE</remediationFunction>
-        <remediationFunctionBaseEffort>2min</remediationFunctionBaseEffort>
     </rule>
     <rule>
-        <key>ancient-clj-dependency</key>
-        <name>Outdated Dependency</name>
-        <internalKey>ancient-dependency</internalKey>
-        <description>Dependencies can be upgraded to newer version.
+        <key>kibit-threading-macro</key>
+        <name>Prefer threading macros for readability</name>
+        <internalKey>kibit-threading-macro</internalKey>
+        <description>
+            Suggestion from Kibit to simplify nested forms using threading macros.
         </description>
         <severity>MINOR</severity>
         <cardinality>SINGLE</cardinality>
         <status>READY</status>
-        <type>VULNERABILITY</type>
-        <remediationFunction>CONSTANT_ISSUE</remediationFunction>
-        <remediationFunctionBaseEffort>60min</remediationFunctionBaseEffort>
+        <type>CODE_SMELL</type>
     </rule>
     <rule>
-        <key>nvd-critical</key>
-        <name>Critical Vulnerability</name>
-        <internalKey>nvd-critical</internalKey>
-        <description>Critical severity security problem
+        <key>kibit-redundant-anonymous-function</key>
+        <name>Replace redundant anonymous functions</name>
+        <internalKey>kibit-redundant-anonymous-function</internalKey>
+        <description>
+            Kibit detected an anonymous function that can be replaced by an existing function.
         </description>
-        <severity>BLOCKER</severity>
+        <severity>MINOR</severity>
         <cardinality>SINGLE</cardinality>
         <status>READY</status>
-        <type>VULNERABILITY</type>
-        <remediationFunction>CONSTANT_ISSUE</remediationFunction>
-        <remediationFunctionBaseEffort>60min</remediationFunctionBaseEffort>
+        <type>CODE_SMELL</type>
     </rule>
     <rule>
-        <key>nvd-high</key>
-        <name>High Vulnerability</name>
-        <internalKey>nvd-high</internalKey>
-        <description>High severity security problem
+        <key>kibit-use-into</key>
+        <name>Prefer into over intermediate collection construction</name>
+        <internalKey>kibit-use-into</internalKey>
+        <description>
+            Kibit suggests using into to reduce intermediate collections.
         </description>
-        <severity>BLOCKER</severity>
+        <severity>MINOR</severity>
         <cardinality>SINGLE</cardinality>
         <status>READY</status>
-        <type>VULNERABILITY</type>
-        <remediationFunction>CONSTANT_ISSUE</remediationFunction>
-        <remediationFunctionBaseEffort>60min</remediationFunctionBaseEffort>
+        <type>CODE_SMELL</type>
     </rule>
     <rule>
-        <key>nvd-medium</key>
-        <name>Medium Vulnerability</name>
-        <internalKey>nvd-medium</internalKey>
-        <description>High severity security problem
+        <key>eastwood</key>
+        <name>Issue reported by Eastwood</name>
+        <internalKey>eastwood</internalKey>
+        <description>
+            Issue reported by Eastwood. The issue message contains the original Eastwood warning.
+        </description>
+        <severity>MINOR</severity>
+        <cardinality>SINGLE</cardinality>
+        <status>READY</status>
+        <type>CODE_SMELL</type>
+    </rule>
+    <rule>
+        <key>eastwood-unused-locals</key>
+        <name>Remove unused locals</name>
+        <internalKey>eastwood-unused-locals</internalKey>
+        <description>
+            Eastwood detected local values that are never used.
+        </description>
+        <severity>MINOR</severity>
+        <cardinality>SINGLE</cardinality>
+        <status>READY</status>
+        <type>CODE_SMELL</type>
+    </rule>
+    <rule>
+        <key>eastwood-unused-namespace</key>
+        <name>Remove unused namespaces</name>
+        <internalKey>eastwood-unused-namespace</internalKey>
+        <description>
+            Eastwood detected required namespaces that are not used.
+        </description>
+        <severity>MINOR</severity>
+        <cardinality>SINGLE</cardinality>
+        <status>READY</status>
+        <type>CODE_SMELL</type>
+    </rule>
+    <rule>
+        <key>eastwood-constant-test</key>
+        <name>Avoid constant test expressions</name>
+        <internalKey>eastwood-constant-test</internalKey>
+        <description>
+            Constant conditions may indicate dead branches or faulty logic.
+        </description>
+        <severity>MAJOR</severity>
+        <cardinality>SINGLE</cardinality>
+        <status>READY</status>
+        <type>BUG</type>
+    </rule>
+    <rule>
+        <key>eastwood-reflection-warning</key>
+        <name>Fix reflection warnings</name>
+        <internalKey>eastwood-reflection-warning</internalKey>
+        <description>
+            Reflection warnings often indicate performance and type-hinting issues.
+        </description>
+        <severity>MINOR</severity>
+        <cardinality>SINGLE</cardinality>
+        <status>READY</status>
+        <type>CODE_SMELL</type>
+    </rule>
+    <rule>
+        <key>eastwood-wrong-arity</key>
+        <name>Fix wrong arity calls</name>
+        <internalKey>eastwood-wrong-arity</internalKey>
+        <description>
+            Eastwood detected a possible wrong arity call.
+        </description>
+        <severity>MAJOR</severity>
+        <cardinality>SINGLE</cardinality>
+        <status>READY</status>
+        <type>BUG</type>
+    </rule>
+    <rule>
+        <key>lein-ancient</key>
+        <name>Outdated dependency reported by Lein Ancient</name>
+        <internalKey>lein-ancient</internalKey>
+        <description>
+            Issue reported by Lein Ancient when a dependency is outdated.
+        </description>
+        <severity>MAJOR</severity>
+        <cardinality>SINGLE</cardinality>
+        <status>READY</status>
+        <type>BUG</type>
+    </rule>
+    <rule>
+        <key>nvd</key>
+        <name>Vulnerability reported by nvd-clojure</name>
+        <internalKey>nvd</internalKey>
+        <description>
+            Vulnerability reported by nvd-clojure based on the dependency-check report.
         </description>
         <severity>MAJOR</severity>
         <cardinality>SINGLE</cardinality>
         <status>READY</status>
         <type>VULNERABILITY</type>
-        <remediationFunction>CONSTANT_ISSUE</remediationFunction>
-        <remediationFunctionBaseEffort>60min</remediationFunctionBaseEffort>
-    </rule>
-    <rule>
-        <key>nvd-low</key>
-        <name>Low Vulnerability</name>
-        <internalKey>nvd-low</internalKey>
-        <description>Low severity security problem
-        </description>
-        <severity>MINOR</severity>
-        <cardinality>SINGLE</cardinality>
-        <status>READY</status>
-        <type>VULNERABILITY</type>
-        <remediationFunction>CONSTANT_ISSUE</remediationFunction>
-        <remediationFunctionBaseEffort>60min</remediationFunctionBaseEffort>◊
     </rule>
 </rules>
